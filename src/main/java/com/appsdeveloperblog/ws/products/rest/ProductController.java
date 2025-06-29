@@ -1,6 +1,5 @@
 package com.appsdeveloperblog.ws.products.rest;
 
-import org.apache.kafka.clients.admin.NewTopic;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
