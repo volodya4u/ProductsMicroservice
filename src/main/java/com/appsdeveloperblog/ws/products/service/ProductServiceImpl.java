@@ -8,7 +8,6 @@ import org.springframework.kafka.support.SendResult;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
 
 @Slf4j
 @Service
@@ -32,7 +31,7 @@ public class ProductServiceImpl implements ProductService {
                 productRestModel.getPrice(),
                 productRestModel.getQuantity());
 
-//        asynchronous execution
+//        // asynchronous execution
 //        CompletableFuture<SendResult<String, ProductCreatedEvent>> future =
 //                kafkaTemplate.send("product-created-events-topic", productId, productCreatedEvent);
 //
@@ -45,8 +44,14 @@ public class ProductServiceImpl implements ProductService {
 //            }
 //        });
 
+        log.info("Before publishing a ProductCreatedEvent");
+
         SendResult<String, ProductCreatedEvent> result =
                 kafkaTemplate.send("product-created-events-topic", productId, productCreatedEvent).get();
+
+        log.info("Partition: {}", result.getRecordMetadata().partition());
+        log.info("Topic: {}", result.getRecordMetadata().topic());
+        log.info("Offset: {}", result.getRecordMetadata().offset());
 
         log.info("***** Returning product id");
 
