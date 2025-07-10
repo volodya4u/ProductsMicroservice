@@ -1,6 +1,6 @@
 package com.appsdeveloperblog.ws.products.service;
 
-import com.appsdeveloperblog.ws.products.ProductCreatedEvent;
+import com.appsdeveloperblog.ws.core.ProductCreatedEvent;
 import com.appsdeveloperblog.ws.products.rest.CreateProductRestModel;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.core.KafkaTemplate;
