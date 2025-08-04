@@ -3,6 +3,7 @@ package com.appsdeveloperblog.ws.products.service;
 import com.appsdeveloperblog.ws.core.ProductCreatedEvent;
 import com.appsdeveloperblog.ws.products.rest.CreateProductRestModel;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.kafka.clients.producer.ProducerRecord;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.SendResult;
 import org.springframework.stereotype.Service;
@@ -46,8 +47,14 @@ public class ProductServiceImpl implements ProductService {
 
         log.info("Before publishing a ProductCreatedEvent");
 
+        ProducerRecord<String, ProductCreatedEvent> record = new ProducerRecord<>(
+                "product-created-events-topic",
+                productId,
+                productCreatedEvent);
+        record.headers().add("messageId", UUID.randomUUID().toString().getBytes());
+
         SendResult<String, ProductCreatedEvent> result =
-                kafkaTemplate.send("product-created-events-topic", productId, productCreatedEvent).get();
+                kafkaTemplate.send(record).get();
 
         log.info("Partition: {}", result.getRecordMetadata().partition());
         log.info("Topic: {}", result.getRecordMetadata().topic());
