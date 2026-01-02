@@ -10,6 +10,7 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.env.Environment;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
@@ -36,20 +37,17 @@ import java.util.concurrent.LinkedBlockingQueue;
 @SpringBootTest(properties="spring.kafka.producer.bootstrap-servers=${spring.embedded.kafka.brokers}")
 public class ProductsServiceIntegrationTest {
 
+    @Autowired
     private ProductService productService;
+
+    @Autowired
     private EmbeddedKafkaBroker embeddedKafkaBroker;
+
+    @Autowired
     private Environment environment;
 
     private KafkaMessageListenerContainer<String, ProductCreatedEvent> container;
     private BlockingQueue<ConsumerRecord<String, ProductCreatedEvent>> records;
-
-    public ProductsServiceIntegrationTest(ProductService productService,
-                                          EmbeddedKafkaBroker embeddedKafkaBroker,
-                                          Environment environment) {
-        this.productService = productService;
-        this.embeddedKafkaBroker = embeddedKafkaBroker;
-        this.environment = environment;
-    }
 
     @BeforeAll
     void setup() {
