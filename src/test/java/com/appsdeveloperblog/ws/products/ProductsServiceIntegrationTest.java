@@ -29,6 +29,10 @@ import java.math.BigDecimal;
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @DirtiesContext
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -78,8 +82,16 @@ public class ProductsServiceIntegrationTest {
         // Act
         productService.createProduct(createProductRestModel);
 
-
         // Assert
+        ConsumerRecord<String, ProductCreatedEvent> message
+                = records.poll(3000, TimeUnit.MILLISECONDS);
+        assertNotNull(message);
+        assertNotNull(message.key());
+        ProductCreatedEvent productCreatedEvent = message.value();
+        assertEquals(createProductRestModel.getQuantity(), productCreatedEvent.getQuantity());
+        assertEquals(createProductRestModel.getTitle(), productCreatedEvent.getTitle());
+        assertEquals(createProductRestModel.getPrice(), productCreatedEvent.getPrice());
+
     }
 
     private Map<String, Object> getConsumerProperties() {
